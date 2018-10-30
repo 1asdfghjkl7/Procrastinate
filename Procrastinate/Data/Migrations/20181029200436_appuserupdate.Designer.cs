@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Procrastinate.Data;
 
 namespace Procrastinate.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181029200436_appuserupdate")]
+    partial class appuserupdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -195,18 +197,15 @@ namespace Procrastinate.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("ApplicationUserId")
-                        .IsRequired();
-
                     b.Property<string>("Href")
                         .IsRequired();
 
                     b.Property<string>("Title")
                         .IsRequired();
 
-                    b.HasKey("SavedArticlesId");
+                    b.Property<int>("UserId");
 
-                    b.HasIndex("ApplicationUserId");
+                    b.HasKey("SavedArticlesId");
 
                     b.ToTable("SavedArticles");
                 });
@@ -224,8 +223,8 @@ namespace Procrastinate.Data.Migrations
                     b.HasDiscriminator().HasValue("ApplicationUser");
 
                     b.HasData(
-                        new { Id = "36189507-a813-4d7e-a4e3-765b86401755", AccessFailedCount = 0, ConcurrencyStamp = "c0d4e6d5-0489-4a41-8959-9c5bbb186a53", Email = "admin@admin.com", EmailConfirmed = true, LockoutEnabled = false, NormalizedEmail = "ADMIN@ADMIN.COM", NormalizedUserName = "ADMIN@ADMIN.COM", PasswordHash = "AQAAAAEAACcQAAAAEBaXi9yKZF4a+yQCjUkPGbDGS/LXM/nPj8nsX+WyeYIPFa/c7tfXtidgpmVY0foIGQ==", PhoneNumberConfirmed = false, SecurityStamp = "6a977e75-9215-4d7d-be45-6a1849dc9364", TwoFactorEnabled = false, UserName = "admin@admin.com", FirstName = "admin", LastName = "admin" },
-                        new { Id = "d2df3b32-5a70-4a35-9db8-9b63fc2a1af4", AccessFailedCount = 0, ConcurrencyStamp = "ec21d849-6825-4102-ad3f-49194f778268", Email = "ladyface@faces.com", EmailConfirmed = true, LockoutEnabled = false, NormalizedEmail = "LADYFACE@FACES.COM", NormalizedUserName = "LADYFACE@FACES.COM", PasswordHash = "AQAAAAEAACcQAAAAELV1S/CHvfMBjTDdCR8brecNSulk6+w/zojCf3AsLpAdVwarpj7+p4jVTdlHIol95w==", PhoneNumberConfirmed = false, SecurityStamp = "d38c1db9-42ae-4eff-b3f4-6231b544cb19", TwoFactorEnabled = false, UserName = "LadyFace@Faces.com", FirstName = "April", LastName = "AwesomeLastName" }
+                        new { Id = "1949dc0b-cde8-49ed-b889-184e1e392a02", AccessFailedCount = 0, ConcurrencyStamp = "fc57b389-4f63-4b1c-90ba-e807ee1ef152", Email = "admin@admin.com", EmailConfirmed = true, LockoutEnabled = false, NormalizedEmail = "ADMIN@ADMIN.COM", NormalizedUserName = "ADMIN@ADMIN.COM", PasswordHash = "AQAAAAEAACcQAAAAEGiho3cnE12LbSq/LfSElL8AKBrwgnQ20/8xvENGrB5bGDjQnZOcom7DTLrE9DeBZA==", PhoneNumberConfirmed = false, SecurityStamp = "beb4a41b-ee07-483d-94cb-5db49b77caf9", TwoFactorEnabled = false, UserName = "admin@admin.com", FirstName = "admin", LastName = "admin" },
+                        new { Id = "b0f5f810-6029-4eb2-8a30-01fcea10e69f", AccessFailedCount = 0, ConcurrencyStamp = "32f645b8-75d1-40ea-814d-459cf29c0817", Email = "ladyface@faces.com", EmailConfirmed = true, LockoutEnabled = false, NormalizedEmail = "LADYFACE@FACES.COM", NormalizedUserName = "LADYFACE@FACES.COM", PasswordHash = "AQAAAAEAACcQAAAAEOAFGm/EbVy0UhX6RvQEVPCfizekT3pyfzPt8Wv2CtR6PGONme5SjV23rAK7ARvZjA==", PhoneNumberConfirmed = false, SecurityStamp = "ad5fac27-657d-48a6-95cc-4946944c6254", TwoFactorEnabled = false, UserName = "LadyFace@Faces.com", FirstName = "April", LastName = "AwesomeLastName" }
                     );
                 });
 
@@ -271,14 +270,6 @@ namespace Procrastinate.Data.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser")
                         .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Procrastinate.Models.SavedArticles", b =>
-                {
-                    b.HasOne("Procrastinate.Models.ApplicationUser", "ApplicationUser")
-                        .WithMany()
-                        .HasForeignKey("ApplicationUserId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618

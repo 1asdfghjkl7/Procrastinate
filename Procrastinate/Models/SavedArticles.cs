@@ -12,7 +12,9 @@ namespace Procrastinate.Models
         public int SavedArticlesId { get; set; }
         
         [Required]
-        public int UserId { get; set; }
+        public string ApplicationUserId { get; set; }
+
+        public virtual ApplicationUser ApplicationUser { get; set; }
 
         [Required]
         public string Title { get; set; }

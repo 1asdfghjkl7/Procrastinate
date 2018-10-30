@@ -6,8 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="DotNetCoreBranch.RedditSharp" Version="1.0.4" />
     <PackageReference Include="Microsoft.AspNetCore.App" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.4" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.5" PrivateAssets="All" />
   </ItemGroup>
 
 </Project>
