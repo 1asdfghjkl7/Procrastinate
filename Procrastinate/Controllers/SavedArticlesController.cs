@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -12,6 +13,7 @@ using Procrastinate.Models.SavedArticlesViewModel;
 
 namespace Procrastinate.Views
 {
+    [Authorize]
     public class SavedArticlesController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -31,7 +33,8 @@ namespace Procrastinate.Views
         // GET: SavedArticles
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.SavedArticles.Include(s => s.ApplicationUser);
+            var curuser = await GetCurrentUserAsync();
+            var applicationDbContext = _context.SavedArticles.Include(s => s.ApplicationUser).Where(s => s.ApplicationUserId == curuser.Id);
             return View(await applicationDbContext.ToListAsync());
         }
 

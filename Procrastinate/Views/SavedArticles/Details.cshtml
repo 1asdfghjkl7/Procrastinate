@@ -11,12 +11,6 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.ApplicationUser)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ApplicationUser.Id)
-        </dd>
-        <dt>
             @Html.DisplayNameFor(model => model.Title)
         </dt>
         <dd>
@@ -26,7 +20,9 @@
             @Html.DisplayNameFor(model => model.Href)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Href)
+            <a target="_blank" href="@Html.DisplayFor(model => model.Href)">
+                @Html.DisplayFor(model => model.Href)
+            </a>
         </dd>
     </dl>
 </div>

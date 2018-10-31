@@ -4,15 +4,35 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Procrastinate.Data;
 using Procrastinate.Models;
 
 namespace Procrastinate.Controllers
 {
     public class HomeController : Controller
     {
+
+        private readonly ApplicationDbContext _context;
+
+        private readonly UserManager<ApplicationUser> _userManager;
+
+
+
+        public HomeController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        {
+            _context = context;
+            _userManager = userManager;
+        }
+
+        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
+
+
         public async Task<IActionResult> Index()
         {
 
@@ -43,6 +63,23 @@ namespace Procrastinate.Controllers
                 }
             }
 
+        }
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(string Title, string Href)
+        {
+            var curuser = await GetCurrentUserAsync();
+            SavedArticles savedArticles = new SavedArticles();
+            savedArticles.Title = Title;
+            savedArticles.Href = Href;
+            savedArticles.ApplicationUserId = curuser.Id;
+            _context.Add(savedArticles);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
+            
+            //ViewData["ApplicationUserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", savedArticles.ApplicationUserId);
+            //return View(savedArticles);
         }
 
         public IActionResult About()
