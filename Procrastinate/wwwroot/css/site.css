@@ -101,6 +101,41 @@ html {
     padding: 0;
 }
 
+#Tag {
+    background: none !important;
+    border: none;
+    font: inherit;
+    cursor: pointer;
+    display: block;
+    color: #ddd;
+    text-decoration: none;
+    text-align:left;
+    width: 220px;
+    padding: 10px 15px 10px 30px !important;
+}
+
+.sidebar-nav > .dropdown-menu > form > li {
+    position: relative;
+    line-height: 20px;
+    display: inline-block;
+    width: 100%;
+}
+
+.sidebar-nav > .dropdown-menu > form > li:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 3px;
+    background-color: #1c1c1c;
+    -webkit-transition: width .2s ease-in;
+    -moz-transition: width .2s ease-in;
+    -ms-transition: width .2s ease-in;
+    transition: width .2s ease-in;
+}
+
 .sidebar-nav {
     position: absolute;
     top: 0;

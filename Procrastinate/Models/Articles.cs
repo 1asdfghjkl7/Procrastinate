@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 
 namespace Procrastinate.Models
 {
+    public class ApiResults
+    {
+        public List<Articles> Articles { get; set; }
+    }
     public class Articles
     {
         public IEnumerable<Hits> Hits { get; set; }

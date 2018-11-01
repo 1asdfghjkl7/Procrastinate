@@ -1,33 +1,42 @@
-﻿@model Procrastinate.Models.Articles
+﻿@model Procrastinate.Models.ApiResults
 
 
 @{
     ViewData["Title"] = "Home Page";
 }
 
-@foreach (var item in Model.Hits)
+<form asp-controller="/" asp-action="Index">
+    <p>
+        Title: <input type="text" name="search">
+        <input type="submit" value="Search" />
+    </p>
+</form>
+
+@foreach (var articles in Model.Articles)
 {
-    <div class="card">
-        <div class="card-body">
-            <h5>@item.Title</h5>
-            <a class="card-link" target="_blank" href="@item.Url">@item.Url</a>
-            <form asp-action="Create">
-                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <div class="form-group">
-                    <input type="hidden" name="Title" value="@item.Title" class="form-control" />
+    @foreach (var item in articles.Hits)
+    {
+        @if (!String.IsNullOrEmpty(item.Url))
+        {
+            <div class="card">
+                <div class="card-body">
+                    <h5>@item.Title</h5>
+                    <a class="card-link" target="_blank" href="@item.Url">@item.Url</a>
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="form-group">
+                            <input type="hidden" name="Title" value="@item.Title" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <input type="hidden" name="Href" value="@item.Url" class="form-control" />
+                            <span asp-validation-for="Articles" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <input type="submit" value="Save" class="btn btn-default" />
+                        </div>
+                    </form>
                 </div>
-                <div class="form-group">
-                    <input type="hidden" name="Href" value="@item.Url" class="form-control" />
-                    <span asp-validation-for="Hits" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                    <input type="submit" value="Save" class="btn btn-default" />
-                </div>
-            </form>
-        </div>
-    </div>
+            </div>
+        }
+    }
 }
-
-
-@*<script type="module" src="~/js/NewsFeed.js">
-    </script>*@
