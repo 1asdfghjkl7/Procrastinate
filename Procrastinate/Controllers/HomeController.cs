@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Procrastinate.Data;
 using Procrastinate.Models;
+using Procrastinate.ClientApiScript;
 
 namespace Procrastinate.Controllers
 {
@@ -32,38 +27,28 @@ namespace Procrastinate.Controllers
 
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
-
-        public async Task<IActionResult> Index()
+        //pass in string of tags or null
+        //pass in string of search query or null
+        [Authorize]
+        public async Task<IActionResult> Index(string tags, string search, int? whichAPIs)
         {
-
-            using (var client = new HttpClient())
+            if (!String.IsNullOrEmpty(search))
             {
-                try
-                {
-                    client.BaseAddress = new Uri("https://hn.algolia.com/api/v1/");
-                    var response = await client.GetAsync($"https://hn.algolia.com/api/v1/search?tags=front_page");
-                    response.EnsureSuccessStatusCode();
-
-                    var stringResult = await response.Content.ReadAsStringAsync();
-                    var rawWeather = JsonConvert.DeserializeObject<Articles>(stringResult);
-                    var thing = rawWeather.Hits;
-
-                    JToken token = JObject.Parse(stringResult);
-                    //Array page = (Array)token.SelectToken("hits");
-                    var totalPages = token.Children()[0];
-
-
-                    return View(rawWeather);
-
-
-                }
-                catch (HttpRequestException httpRequestException)
-                {
-                    return BadRequest($"Error getting weather from OpenWeather: {httpRequestException.Message}");
-                }
+                return View(await new ClientApiHandler().ClientApiSearch(search));
             }
-
+            else if (!String.IsNullOrEmpty(tags))
+            {
+                return View(await new ClientApiHandler().ClientApiTag(tags));
+            }
+            else
+            {
+                return View(await new ClientApiHandler().ClientApiDefault());
+            }
         }
+
+
+
+
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -75,11 +60,9 @@ namespace Procrastinate.Controllers
             savedArticles.Href = Href;
             savedArticles.ApplicationUserId = curuser.Id;
             _context.Add(savedArticles);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            
-            //ViewData["ApplicationUserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", savedArticles.ApplicationUserId);
-            //return View(savedArticles);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+
         }
 
         public IActionResult About()

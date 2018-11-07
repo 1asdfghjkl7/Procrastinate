@@ -1,37 +1,9 @@
-﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification\ 
-for details on configuring this project to bundle and minify static web assets. 
-body {
-    padding-top: 50px;
-    padding-bottom: 20px;
-}
-
- Wrapping element 
- Set some basic padding to keep content from hitting the edges 
-.body-content {
-    padding-left: 15px;
-    padding-right: 15px;
-}
-
- Carousel 
-.carousel-caption p {
-    font-size: 20px;
-    line-height: 1.4;
-}
-
- Make .svg files in the carousel display properly in older browsers 
-.carousel-inner .item img[src$=".svg"] {
-    width: 100%;
-}
-
- QR code generator 
-#qrCode {
-    margin: 15px;
-}*/
-
-body {
+﻿body {
     position: relative;
     overflow-x: hidden;
-    background-color: #CFD8DC;
+    background: linear-gradient(to bottom, #cfd8dc, #bbcbd2, #a7bec8, #93b1be, #7fa4b4);
+    background-attachment:fixed;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
 }
 
 body,
@@ -43,6 +15,11 @@ html {
 .nav .open > a:hover,
 .nav .open > a:focus {
     background-color: transparent;
+}
+
+div.card {
+    margin-bottom: 1rem;
+    box-shadow: rgba(0, 0, 0, 0.3) 5px 5px 10px;
 }
 
 /*-------------------------------*/
@@ -99,6 +76,41 @@ html {
 /*-------------------------------*/
 .navbar {
     padding: 0;
+}
+
+#Tag {
+    background: none !important;
+    border: none;
+    font: inherit;
+    cursor: pointer;
+    display: block;
+    color: #ddd;
+    text-decoration: none;
+    text-align:left;
+    width: 220px;
+    padding: 10px 15px 10px 30px !important;
+}
+
+.sidebar-nav > .dropdown-menu > form > li {
+    position: relative;
+    line-height: 20px;
+    display: inline-block;
+    width: 100%;
+}
+
+.sidebar-nav > .dropdown-menu > form > li:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    height: 100%;
+    width: 3px;
+    background-color: #1c1c1c;
+    -webkit-transition: width .2s ease-in;
+    -moz-transition: width .2s ease-in;
+    -ms-transition: width .2s ease-in;
+    transition: width .2s ease-in;
 }
 
 .sidebar-nav {
@@ -246,6 +258,10 @@ a#reg::before {
 
 a[href*="/Identity/Account/Login"]::before {
     content: "\f007" !important;
+}
+
+.sidebar-nav > li > [href="/savedarticles"]::before {
+    content: "\f0c7" !important;
 }
 
 a#manage::before {

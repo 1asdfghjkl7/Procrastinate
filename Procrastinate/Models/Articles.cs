@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Procrastinate.Models
 {
+    public class ApiResults
+    {
+        public List<Articles> Articles { get; set; }
+    }
     public class Articles
     {
         public IEnumerable<Hits> Hits { get; set; }
