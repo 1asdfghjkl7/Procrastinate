@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using Procrastinate.Data;
 using Procrastinate.Models;
+using Procrastinate.ClientApiScript;
 
 namespace Procrastinate.Controllers
 {
@@ -32,145 +27,26 @@ namespace Procrastinate.Controllers
 
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
-        //pass in int to specify if you want only specific apis
-        //pass in string of tags or null if it will work
-        //pass in string of search query or null if it will work maybe empty string
+        //pass in string of tags or null
+        //pass in string of search query or null
+        [Authorize]
         public async Task<IActionResult> Index(string tags, string search, int? whichAPIs)
         {
-
-            using (var client = new HttpClient())
+            if (!String.IsNullOrEmpty(search))
             {
-                    var arrayOfArticles = new List<Articles> {  };
-                if (!String.IsNullOrEmpty(tags))
-                {
-                    client.BaseAddress = new Uri("https://hn.algolia.com/api/v1/");
-                    var response = await client.GetAsync($"https://hn.algolia.com/api/v1/search?{tags}");
-                    response.EnsureSuccessStatusCode();
-
-                    var stringResult = await response.Content.ReadAsStringAsync();
-                    var jsonArticles = JsonConvert.DeserializeObject<Articles>(stringResult);
-
-                    arrayOfArticles.Add(jsonArticles);
-
-                    var apiResults = new ApiResults
-                    {
-                        Articles = arrayOfArticles
-                    };
-
-                    return View(apiResults);
-                }
-                if (!String.IsNullOrEmpty(search))
-                {
-                    client.BaseAddress = new Uri("https://hn.algolia.com/api/v1/");
-                    var response = await client.GetAsync($"https://hn.algolia.com/api/v1/search_by_date?query={search}&tags=story&hitsPerPage=50");
-                    response.EnsureSuccessStatusCode();
-
-                    var stringResult = await response.Content.ReadAsStringAsync();
-                    var jsonArticles = JsonConvert.DeserializeObject<Articles>(stringResult);
-
-                    arrayOfArticles.Add(jsonArticles);
-
-                    var apiResults = new ApiResults
-                    {
-                        Articles = arrayOfArticles
-                    };
-
-                    return View(apiResults);
-                }
-                else
-                {
-                try
-                {
-                    client.BaseAddress = new Uri("https://hn.algolia.com/api/v1/");
-                    var response = await client.GetAsync($"https://hn.algolia.com/api/v1/search?tags=front_page");
-                    response.EnsureSuccessStatusCode();
-
-                    var stringResult = await response.Content.ReadAsStringAsync();
-                    var jsonArticles = JsonConvert.DeserializeObject<Articles>(stringResult);
-
-                        //client.BaseAddress = new Uri("http://localhost:8080");
-                        //var response2 = await client.GetAsync($"http://localhost:8080/quote");
-                        //response2.EnsureSuccessStatusCode();
-
-                        //var stringResult2 = await response2.Content.ReadAsStringAsync();
-                        //var jsonArticles2 = JsonConvert.DeserializeObject<Articles>(stringResult2);
-
-                        arrayOfArticles.Add(jsonArticles);
-
-                    //var thing = stringResult + stringResult2;
-                    //Console.WriteLine(thing);
-
-                    //var thing = jsonArticles.Hits;
-
-                    //JToken token = JObject.Parse(stringResult);
-                    //Array page = (Array)token.SelectToken("hits");
-                    //var totalPages = token.Children()[0];
-                    var apiResults = new ApiResults
-                    {
-                        Articles = arrayOfArticles
-                    };
-
-                    return View(apiResults);
-
-
-                }
-                catch (HttpRequestException httpRequestException)
-                {
-                    return BadRequest($"Error getting weather from OpenWeather: {httpRequestException.Message}");
-                }
+                return View(await new ClientApiHandler().ClientApiSearch(search));
             }
-                }
-
+            else if (!String.IsNullOrEmpty(tags))
+            {
+                return View(await new ClientApiHandler().ClientApiTag(tags));
+            }
+            else
+            {
+                return View(await new ClientApiHandler().ClientApiDefault());
+            }
         }
 
-        //[ActionName("IndexWithSpecificTag")]
-        //public async Task<IActionResult> Index(string stri)
-        //{
 
-        //    using (var client = new HttpClient())
-        //    {
-        //        try
-        //        {
-        //            client.BaseAddress = new Uri("https://hn.algolia.com/api/v1/");
-        //            var response = await client.GetAsync($"https://hn.algolia.com/api/v1/search?tags=front_page");
-        //            response.EnsureSuccessStatusCode();
-
-        //            var stringResult = await response.Content.ReadAsStringAsync();
-        //            var jsonArticles = JsonConvert.DeserializeObject<Articles>(stringResult);
-
-        //            //client.BaseAddress = new Uri("http://localhost:8080");
-        //            var response2 = await client.GetAsync($"http://localhost:8080/quote");
-        //            //response2.EnsureSuccessStatusCode();
-
-        //            var stringResult2 = await response2.Content.ReadAsStringAsync();
-        //            var jsonArticles2 = JsonConvert.DeserializeObject<Articles>(stringResult2);
-
-        //            var arrayOfArticles = new Articles[] { jsonArticles, jsonArticles2 };
-
-        //            //var thing = stringResult + stringResult2;
-        //            //Console.WriteLine(thing);
-
-        //            //var thing = jsonArticles.Hits;
-
-        //            //JToken token = JObject.Parse(stringResult);
-        //            //Array page = (Array)token.SelectToken("hits");
-        //            //var totalPages = token.Children()[0];
-        //            var apiResults = new ApiResults
-        //            {
-        //                Articles = arrayOfArticles
-        //            };
-
-        //            return View(apiResults);
-
-
-        //        }
-        //        catch (HttpRequestException httpRequestException)
-        //        {
-        //            return BadRequest($"Error getting weather from OpenWeather: {httpRequestException.Message}");
-        //        }
-        //    }
-
-        //}
 
 
         [Authorize]
@@ -187,8 +63,6 @@ namespace Procrastinate.Controllers
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
 
-            //ViewData["ApplicationUserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", savedArticles.ApplicationUserId);
-            //return View(savedArticles);
         }
 
         public IActionResult About()

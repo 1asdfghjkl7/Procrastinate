@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -9,7 +7,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Procrastinate.Data;
 using Procrastinate.Models;
-using Procrastinate.Models.SavedArticlesViewModel;
 
 namespace Procrastinate.Views
 {
@@ -61,15 +58,10 @@ namespace Procrastinate.Views
         public async Task<IActionResult> Create()
         {
             var user = await GetCurrentUserAsync();
-            //ViewData["ApplicationUserId"] = user.Id;
-            //SavedArticlesCreateViewModel model = new SavedArticlesCreateViewModel();
-            //model.SavedArticles.ApplicationUserId = user.Id;
             return View();
         }
 
         // POST: SavedArticles/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("SavedArticlesId,ApplicationUserId,Title,Href")] SavedArticles savedArticles)
@@ -102,8 +94,6 @@ namespace Procrastinate.Views
         }
 
         // POST: SavedArticles/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("SavedArticlesId,ApplicationUserId,Title,Href")] SavedArticles savedArticles)
